@@ -1,1 +1,4 @@
-# SenX-feat-tiganoviv-linear-algebra
+## Linear algebra eai-2024-lab1
+### Students:
+* Вадим Тиганов J3112 Ису: 467701
+* Арсений Вагин J3112 Ису: 465339
