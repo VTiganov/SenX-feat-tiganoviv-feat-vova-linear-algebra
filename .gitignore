@@ -1,4 +1,6 @@
 venv
+
+report.out
 report.aux
 report.fdb_latexmk
 report.fls
