@@ -1,11 +1,38 @@
-\documentclass[14pt]{extarticle}  % Use the extsizes package for 14pt font size
-\usepackage[T2A]{fontenc}  % Cyrillic font encoding
-\usepackage[utf8]{inputenc}  % UTF-8 input encoding
-\usepackage[russian]{babel}  % Russian language support
-\usepackage{times}  % Set the default font to Times New Roman
-\usepackage{geometry}  % For custom page margins
-\geometry{a4paper, left=2cm, right=2cm, top=2cm, bottom=2cm}
+\documentclass[14pt]{extarticle}  
+\usepackage[T2A]{fontenc}  
+\usepackage[utf8]{inputenc}
+\usepackage[russian, english]{babel}
+\usepackage{times}  
+\usepackage{geometry}
+\usepackage{listings}
+\usepackage{xcolor} 
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{caption}
 
+
+\lstset{
+	basicstyle=\ttfamily\footnotesize,
+	keywordstyle=\color{blue}\bfseries, % Стиль ключевых слов
+	commentstyle=\color{gray}\itshape, % Стиль комментариев
+	stringstyle=\color{red}, % Стиль строк
+	numbers=left, % Включение номеров строк
+	numberstyle=\tiny\color{gray}, % Стиль номеров строк
+	stepnumber=1, % Шаг номеров строк
+	numbersep=5pt, % Отступ номеров строк
+	backgroundcolor=\color{white}, % Цвет фона
+	showspaces=false, % Показ пробелов
+	showstringspaces=false, % Показ пробелов в строках
+	showtabs=false, % Показ табуляций
+	tabsize=2, % Размер табуляции
+	captionpos=b, % Позиция подписи
+	breaklines=true, % Перенос длинных строк
+	breakatwhitespace=false, % Перенос по пробелам
+	escapeinside={\%*}{*)}, % Экранирование текста
+	morekeywords={*,...} % Дополнительные ключевые слова
+}
+
+\geometry{a4paper, left=2cm, right=2cm, top=2cm, bottom=2cm}
 \begin{document}
 
 \thispagestyle{empty}
@@ -69,7 +96,7 @@
 \input{tasks}
 
 \newpage
-\section*{Ход выполнения лабораторной работы}
+\section*{Ход выполнения лабораторной работы\\}
 \input{solution}	
 	
 \newpage
@@ -79,5 +106,9 @@
 \newpage
 \section*{Приложения}
 \input{attachments}
+
+\newpage
+\section*{Список использованной литературы}
+\input{literature}
 
 \end{document}
