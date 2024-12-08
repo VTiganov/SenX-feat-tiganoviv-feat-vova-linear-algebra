@@ -4,6 +4,34 @@
 \usepackage[russian, english]{babel}
 \usepackage{times}  
 \usepackage{geometry}
+\usepackage{listings}
+\usepackage{xcolor} 
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{caption}
+
+
+\lstset{
+	basicstyle=\ttfamily\footnotesize,
+	keywordstyle=\color{blue}\bfseries, % Стиль ключевых слов
+	commentstyle=\color{gray}\itshape, % Стиль комментариев
+	stringstyle=\color{red}, % Стиль строк
+	numbers=left, % Включение номеров строк
+	numberstyle=\tiny\color{gray}, % Стиль номеров строк
+	stepnumber=1, % Шаг номеров строк
+	numbersep=5pt, % Отступ номеров строк
+	backgroundcolor=\color{white}, % Цвет фона
+	showspaces=false, % Показ пробелов
+	showstringspaces=false, % Показ пробелов в строках
+	showtabs=false, % Показ табуляций
+	tabsize=2, % Размер табуляции
+	captionpos=b, % Позиция подписи
+	breaklines=true, % Перенос длинных строк
+	breakatwhitespace=false, % Перенос по пробелам
+	escapeinside={\%*}{*)}, % Экранирование текста
+	morekeywords={*,...} % Дополнительные ключевые слова
+}
+
 \geometry{a4paper, left=2cm, right=2cm, top=2cm, bottom=2cm}
 \begin{document}
 
