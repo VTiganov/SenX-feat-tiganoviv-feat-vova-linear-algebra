@@ -59,12 +59,81 @@ findByIndex - поиск элемента по введенному индекс
 	\caption*{Ручной тест поиска страшного элемента в страшной матрице 9х5.}
 	\label{fig:tests-task3}
 \end{figure}
-Итак, справились с первым заданием.\\
+Итак, справились с первым заданием.\vspace{2cm}
 
 \begin{large}
-	Задача 2
+	Задача 2\\
 \end{large}
+Во второй задаче требуется реализовать три функции для операций с матрицами: (полный листинг кода см. в приложении Б)\\
+\begin{itemize}
+	\item Сложение двух матриц.
+	\item Умножение двух матриц.
+	\item Умножение матрицы на скаляр.\\
+\end{itemize}
 
+\begin{large}
+	Использованные библиотеки и инструменты языка\\
+\end{large}
+В ходе написания программы были использованы только стандартные средства языка. Также для удобства и лучшей читаемости кода была импортирована библиотека typing.\\\\
+Были реализованы 3 функции:\\
+matrixAddition - сложение двух матриц.\\
+matrixByMatrixMultiplication - перемножение двух матриц.\\
+matrixScalarMultiplication - умножение одной из двух матриц на заданное число.\\
+Согласно техническому заданию, функция ввода матрицы пользователем была импортирована из файла предыдущего задания. (inputMatrix)
+
+Суть работы алгоритмов:
+\begin{itemize}
+	\item \textbf{matrixAddition}: Классическое сложение матрицы. Возвращаем матрицу, где каждый элемент с определенными индексами равен сумме элементов с соответствующими индексами из складываемых матриц.
+	\begin{gather*}
+		(A+B)_{i,k} = A_{i,k} + B_{i,k}
+	\end{gather*}
+	
+	\item \textbf{matrixByMatrixMultiplication}: Умножение матрицы на матрицу. Возвращаем матрицу, где каждый элемент с определенными индексами равен сумме произведений элементов соответствующей строки первой матрицы и столбца второй матрицы.
+	\begin{gather*}
+		(AB)_{i,j} = \sum_{k=1}^{n} A_{i,k} \cdot B_{k,j}
+	\end{gather*}
+	
+	\item \textbf{matrixScalarMultiplication}: Умножение матрицы на скаляр. Возвращаем матрицу, где каждый элемент равен произведению соответствующего элемента исходной матрицы и скаляра.
+	\begin{gather*}
+		(cA)_{i,j} = c \cdot A_{i,j}
+	\end{gather*}
+\end{itemize}
+\begin{large}
+	Тестирование программы\\
+\end{large}
+Написаны юниттесты для каждой функции класса с помощью стандартной библиотеки unittest. Также протестировано вручную.\\
+Листинг кода теста см. в приложении Б-test.\\
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.5\linewidth]{tests-task4}
+	\caption*{Успешное прохождение unittests}
+	\label{fig:tests-task4}
+\end{figure}
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.46\linewidth]{tests-task5}
+	\caption*{Ручной тест сложения двух матриц 2 на 2.}
+	\label{fig:tests-task5}
+\end{figure}
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.58\linewidth]{tests-task6}
+	\caption*{Ручной тест умножения матрицы 2 на 2 на число Эйлера с небольшим количеством знаков после запятой.}
+	\label{fig:tests-task6}
+\end{figure}
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.7\linewidth]{tests-task7}
+	\caption*{Ручной тест умножения двух страшных матриц 2 на 2.}
+	\label{fig:tests-task7}
+\end{figure}
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.5\linewidth]{tests-task8}
+	\caption*{Удостоверимся в правильности полученного результата, умножив матрицы на сайте-калькуляторе. Результат правильный.}
+	\label{fig:tests-task8}
+\end{figure}
+Справились со вторым заданием.
 
 
 
