@@ -28,4 +28,7 @@ class matrixKeeper():
 
     def findByIndex(self, n: int, m: int) -> float:
         """Находит элемент в матрице по индексу вида n,m и выводит его"""
-        pass
+        
+        if self.matrix is None:
+            raise ValueError("Матрица не была введена.")
+        return self.matrix[n-1][m-1]
