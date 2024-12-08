@@ -18,7 +18,13 @@ class matrixKeeper():
 
     def trace(self) -> float:
         """Поиск следа матрицы"""
-        pass
+        if self.matrix is None:
+            raise ValueError("Матрица не была введена.")
+        
+        if len(self.matrix) != len(self.matrix[0]):
+            raise ValueError("Матрица должна быть квадратной для вычисления следа.")
+        
+        return sum(self.matrix[i][i] for i in range(len(self.matrix)))
 
     def findByIndex(self, n: int, m: int) -> float:
         """Находит элемент в матрице по индексу вида n,m и выводит его"""
