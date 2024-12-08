@@ -1,4 +1,4 @@
-from codefiles.task1 import MatrixKeeper
+from task1 import MatrixKeeper
 from typing import List
 
 def determinantOfMatrix(matrix_keeper: MatrixKeeper) -> float:
@@ -49,3 +49,45 @@ def gauss(matrix: List[List[float]]) -> float:
         determinant *= matrix[i][i]
 
     return (-1) ** swap_count * determinant
+
+def main():
+    matrix_keeper = MatrixKeeper()
+
+    while True:
+        print("\nВыберите из предложенных опций:")
+        print("1: Ввести матрицу вручную.")
+        print("2: Вычислить определитель матрицы.")
+        print("3: Проверить, существует ли обратная матрица.")
+        print("4: Выйти из программы.\n")
+
+        try:
+            option = int(input("Введите номер соответствующей опции: "))
+        except ValueError:
+            print("Некорректный ввод. Пожалуйста, введите число.\n")
+            continue
+
+        if option == 1:
+            matrix_keeper.inputMatrix()
+        elif option == 2:
+            try:
+                det = determinantOfMatrix(matrix_keeper)
+                print(f"Определитель матрицы: {det}\n")
+            except ValueError as e:
+                print(e)
+        elif option == 3:
+            try:
+                is_invertable = isMatrixInvertable(matrix_keeper)
+                if is_invertable:
+                    print("Матрица обратима.\n")
+                else:
+                    print("Матрица необратима.\n")
+            except ValueError as e:
+                print(e)
+        elif option == 4:
+            print("Выход из программы.\n")
+            break
+        else:
+            print("Некорректный ввод. Пожалуйста, выберите опцию от 1 до 4.\n")
+
+if __name__ == "__main__":
+    main()
