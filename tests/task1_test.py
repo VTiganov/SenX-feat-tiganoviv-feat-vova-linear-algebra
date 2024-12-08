@@ -1,11 +1,11 @@
 import unittest
 
-from codefiles.task1 import matrixKeeper
+from codefiles.task1 import MatrixKeeper
 
 class testMatrixKeeper(unittest.TestCase):
 
     def setUp(self):
-        self.keeper = matrixKeeper()
+        self.keeper = MatrixKeeper()
 
     def test_inputMatrix(self):
 
