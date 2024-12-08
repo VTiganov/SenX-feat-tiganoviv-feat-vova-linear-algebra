@@ -1,7 +1,7 @@
 from codefiles.task1 import MatrixKeeper
 from typing import List
 
-def determinerOfMatrix(matrix_keeper: MatrixKeeper) -> float:
+def determinantOfMatrix(matrix_keeper: MatrixKeeper) -> float:
     """Вычисляет определитель матрицы. Размер матрицы: до 100x100."""
     if matrix_keeper.matrix is None:
         raise ValueError("Матрица не задана.")
@@ -15,7 +15,7 @@ def determinerOfMatrix(matrix_keeper: MatrixKeeper) -> float:
 def isMatrixInvertable(matrix_keeper: MatrixKeeper) -> bool:
     """Проверяет, существует ли обратная матрица (detA != 0)."""
     try:
-        det = determinerOfMatrix(matrix_keeper)
+        det = determinantOfMatrix(matrix_keeper)
         return det != 0
     except ValueError:
         return False

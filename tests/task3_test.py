@@ -1,19 +1,19 @@
 import unittest
-from codefiles.task3 import MatrixKeeper, determinerOfMatrix, isMatrixInvertable, gauss
+from codefiles.task3 import MatrixKeeper, determinantOfMatrix, isMatrixInvertable, gauss
 
 class TestMatrixOperations(unittest.TestCase):
 
     def setUp(self):
         self.matrix_keeper = MatrixKeeper()
 
-    def test_determinerOfMatrix(self):
+    def test_determinantOfMatrix(self):
 
         self.matrix_keeper.matrix = [
             [1, 2, 3],
             [0, 5, 6],
             [7, 8, 9]
         ]
-        result = determinerOfMatrix(self.matrix_keeper)
+        result = determinantOfMatrix(self.matrix_keeper)
         expected = -24
         self.assertAlmostEqual(result, expected)
 
@@ -21,12 +21,12 @@ class TestMatrixOperations(unittest.TestCase):
             [4, 7],
             [2, 6]
         ]
-        result = determinerOfMatrix(self.matrix_keeper)
+        result = determinantOfMatrix(self.matrix_keeper)
         expected = 10
         self.assertAlmostEqual(result, expected)
 
         self.matrix_keeper.matrix = [[1 if i == j else 0 for j in range(100)] for i in range(100)]
-        result = determinerOfMatrix(self.matrix_keeper)
+        result = determinantOfMatrix(self.matrix_keeper)
         expected = 1
         self.assertAlmostEqual(result, expected)
 
