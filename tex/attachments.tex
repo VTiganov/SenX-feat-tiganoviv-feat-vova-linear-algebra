@@ -1,0 +1,560 @@
+Пришлось все перевести на английский. Не понял, как в "lstlisting" в \LaTeX \ позволить писать русскими буквами без ошибок компиляции.\\ \\
+\centering\begin{large}
+	{Приложение А.\\
+		 Полный листинг кода к первому заданию}\\
+\end{large}
+
+\begin{lstlisting}
+	from typing import List, Optional
+	
+	class MatrixKeeper:
+		def __init__(self):
+			self.matrix: Optional[List[List[float]]] = None
+		
+		def inputMatrix(self) -> None:
+		"""Input matrix
+		First prompt - input matrix size n X m
+		Second prompt - input the matrix row by row, elements separated by space"""
+		
+			try:
+				n, m = map(int, input("Enter the matrix size n x m separated by space: ").split())
+				self.matrix = []
+				print("Enter the matrix row by row, separating elements with space\n")
+				for _ in range(n):
+					row = list(map(float, input().split()))
+					if len(row) != m:
+						raise ValueError("The number of elements in the row does not match m.")
+						self.matrix.append(row)
+			except ValueError as e:
+				print(f"Input error: {e}")
+				self.matrix = None
+		
+		def trace(self) -> float:
+		"""Find the trace of the matrix"""
+		
+			if self.matrix is None:
+				raise ValueError("Matrix has not been entered.")
+			
+			if len(self.matrix) != len(self.matrix[0]):
+				raise ValueError("The matrix must be square to calculate the trace.")
+		
+		return sum(self.matrix[i][i] for i in range(len(self.matrix)))
+		
+		def findByIndex(self, n: int, m: int) -> float:
+			"""Finds an element in the matrix by index n, m and outputs it"""
+		
+			if self.matrix is None:
+				raise ValueError("Matrix has not been entered.")
+		
+			if n <= 0 or m <= 0 or n > len(self.matrix) or m > len(self.matrix[0]):
+				raise IndexError("Indexes are out of the matrix bounds.")
+		
+			return self.matrix[n-1][m-1]
+		
+	def main():
+		matrix_keeper = MatrixKeeper()
+		
+		while True:
+			print("\nChoose from the following options:")
+			print("1: Enter the matrix manually.")
+			print("2: Find the trace of the matrix.")
+			print("3: Find an element by index in the given matrix.")
+			print("4: Exit the program.\n")
+			
+			try:
+				option = int(input("Enter the number of the corresponding option: "))
+				except ValueError:
+				print("Incorrect input. Please enter a number.\n")
+				continue
+				
+				if option == 1:
+					matrix_keeper.inputMatrix()
+				elif option == 2:
+				try:
+					trace_value = matrix_keeper.trace()
+					print(f"Trace of the matrix: {trace_value}\n")
+				except ValueError as e:
+					print(e)
+				elif option == 3:
+					try:
+						n = int(input("Enter the row number: "))
+						m = int(input("Enter the column number: "))
+						element = matrix_keeper.findByIndex(n, m)
+						print(f"Matrix element [{n}][{m}] = {element}\n")
+					except (ValueError, IndexError) as e:
+					print(e)
+				elif option == 4:
+					print("Exiting the program.\n")
+					break
+				else:
+					print("Incorrect input. Please choose an option from 1 to 4.\n")
+	
+	if __name__ == "__main__":
+	main()
+	
+\end{lstlisting}
+
+\centering\begin{large}
+	{Приложение А-test.\\
+		Полный листинг кода к тестам первого задания}\\
+\end{large}
+\begin{lstlisting}
+	import unittest
+	
+	from codefiles.task1 import MatrixKeeper
+	
+	class testMatrixKeeper(unittest.TestCase):
+	
+		def setUp(self):
+			self.keeper = MatrixKeeper()
+		
+		def test_inputMatrix(self):
+		
+			self.keeper.matrix = [
+			[1.32, 2.32, 3.45],
+			[2.1, 4.312, 4.24],
+			[3.1, 1.12, 9.125]
+			]
+			
+			self.assertEqual(self.keeper.matrix, [
+			[1.32, 2.32, 3.45],
+			[2.1, 4.312, 4.24],
+			[3.1, 1.12, 9.125]
+			])
+			
+			
+		def test_trace(self):
+		
+			self.keeper.matrix = [
+			[1.32, 2.32, 3.45],
+			[2.1, 4.312, 4.24],
+			[3.1, 1.12, 9.125]
+			]
+			
+			self.assertEqual(self.keeper.trace(), 14.757)
+		
+		def test_findByIndex(self):
+			
+			self.keeper.matrix = [
+			[1.0, 2.0, 3.0],
+			[4.0, 5.0, 6.0],
+			[7.0, 8.0, 9.0]
+			]
+			self.assertEqual(self.keeper.findByIndex(1, 1), 1.0)
+			self.assertEqual(self.keeper.findByIndex(2, 2), 5.0)
+			self.assertEqual(self.keeper.findByIndex(3, 3), 9.0)
+		
+		def test_trace_not_square(self):
+		
+			self.keeper.matrix = [
+			[1.0, 2.0, 3.0],
+			[4.0, 5.0, 6.0]
+			]
+			with self.assertRaises(ValueError):
+			self.keeper.trace()
+		
+		def test_findByIndex_out_of_bounds(self):
+		
+			self.keeper.matrix = [
+			[1.0, 2.0, 3.0],
+			[4.0, 5.0, 6.0],
+			[7.0, 8.0, 9.0]
+			]
+			with self.assertRaises(IndexError):
+			self.keeper.findByIndex(4, 4)
+\end{lstlisting}
+
+\centering\begin{large}
+	{Приложение Б.\\
+		Полный листинг кода ко второму заданию}\\
+\end{large}
+\begin{lstlisting}
+	from typing import List, Optional
+	from codefiles.task1 import MatrixKeeper
+	
+	def matrixAddition(matrix_keeper1: MatrixKeeper, matrix_keeper2: MatrixKeeper) -> Optional[List[List[float]]]:
+	"""Addition of two matrices"""
+	
+		if matrix_keeper1.matrix is None or matrix_keeper2.matrix is None:
+			raise ValueError("One or both matrices have not been entered.")
+		
+		if len(matrix_keeper1.matrix) != len(matrix_keeper2.matrix) or len(matrix_keeper1.matrix[0]) != len(matrix_keeper2.matrix[0]):
+			raise ValueError("Matrices must be of the same size for addition.")
+		
+		result = []
+		for i in range(len(matrix_keeper1.matrix)):
+			row = []
+			for j in range(len(matrix_keeper1.matrix[0])):
+				row.append(matrix_keeper1.matrix[i][j] + matrix_keeper2.matrix[i][j])
+				result.append(row)
+		
+		return result
+	
+	def matrixByMatrixMultiplication(matrix_keeper1: MatrixKeeper, matrix_keeper2: MatrixKeeper) -> Optional[List[List[float]]]:
+	"""Matrix by matrix multiplication"""
+	
+		if matrix_keeper1.matrix is None or matrix_keeper2.matrix is None:
+			raise ValueError("One or both matrices have not been entered.")
+		
+		if len(matrix_keeper1.matrix[0]) != len(matrix_keeper2.matrix):
+			raise ValueError("The number of columns in the first matrix must be equal to the number of rows in the second matrix.")
+		
+		result = [[0 for _ in range(len(matrix_keeper2.matrix[0]))] for _ in range(len(matrix_keeper1.matrix))]
+		for i in range(len(matrix_keeper1.matrix)):
+			for j in range(len(matrix_keeper2.matrix[0])):
+				for k in range(len(matrix_keeper2.matrix)):
+					result[i][j] += matrix_keeper1.matrix[i][k] * matrix_keeper2.matrix[k][j]
+		
+		return result
+	
+	def matrixScalarMultiplication(matrix_keeper: MatrixKeeper, scalar: float) -> Optional[List[List[float]]]:
+	"""Matrix by scalar multiplication"""
+	
+		if matrix_keeper.matrix is None:
+			raise ValueError("Matrix has not been entered.")
+			result = []
+		for row in matrix_keeper.matrix:
+			result.append([element * scalar for element in row])
+		
+		return result
+		
+	def main():
+		matrix_keeper1 = MatrixKeeper()
+		matrix_keeper2 = MatrixKeeper()
+		
+		while True:
+			print("\nChoose from the following options:")
+			print("1: Enter the first matrix manually.")
+			print("2: Enter the second matrix manually.")
+			print("3: Add two matrices.")
+			print("4: Multiply matrix by matrix.")
+			print("5: Multiply matrix by scalar.")
+			print("6: Exit the program.\n")
+			
+			try:
+				option = int(input("Enter the number of the corresponding option: "))
+				except ValueError:
+				print("Incorrect input. Please enter a number.\n")
+				continue
+				
+				if option == 1:
+					matrix_keeper1.inputMatrix()
+				elif option == 2:
+					matrix_keeper2.inputMatrix()
+				elif option == 3:
+					try:
+					result = matrixAddition(matrix_keeper1, matrix_keeper2)
+					print("Result of matrix addition:")
+					for row in result:
+					print(row)
+					except ValueError as e:
+					print(e)
+				elif option == 4:
+					try:
+						result = matrixByMatrixMultiplication(matrix_keeper1, matrix_keeper2)
+						print("Result of matrix multiplication:")
+						for row in result:
+						print(row)
+						except ValueError as e:
+						print(e)
+				elif option == 5:
+					try:
+						matrix_choice = int(input("Choose the matrix to multiply by scalar (1 - first matrix, 2 - second matrix): "))
+						if matrix_choice == 1:
+							matrix_keeper = matrix_keeper1
+						elif matrix_choice == 2:
+							matrix_keeper = matrix_keeper2
+						else:
+							raise ValueError("Incorrect matrix choice.")
+						
+						scalar = float(input("Enter the scalar: "))
+						result = matrixScalarMultiplication(matrix_keeper, scalar)
+						print("Result of matrix by scalar multiplication:")
+						for row in result:
+							print(row)
+					except ValueError as e:
+						print(e)
+				elif option == 6:
+					print("Exiting the program.\n")
+					break
+				else:
+					print("Incorrect input. Please choose an option from 1 to 6.\n")
+	
+	if __name__ == "__main__":
+	main()
+\end{lstlisting}
+
+\centering\begin{large}
+	{Приложение Б-test.\\
+		Полный листинг кода к тестам второго задания}\\ \\
+\end{large}
+
+\begin{lstlisting}
+import unittest
+from codefiles.task2 import matrixAddition, matrixByMatrixMultiplication, matrixScalarMultiplication
+from codefiles.task1 import MatrixKeeper
+
+class TestMatrixOperations(unittest.TestCase):
+
+	def setUp(self):
+
+		self.matrix_keeper1 = MatrixKeeper()
+		self.matrix_keeper2 = MatrixKeeper()
+		
+		self.matrix_keeper1.matrix = [
+		[1, 2, 3],
+		[4, 5, 6],
+		[7, 8, 9]
+		]
+		
+		self.matrix_keeper2.matrix = [
+		[9, 8, 7],
+		[6, 5, 4],
+		[3, 2, 1]
+		]
+	
+	def test_matrixAddition(self):
+		result = matrixAddition(self.matrix_keeper1, self.matrix_keeper2)
+		expected = [
+		[10, 10, 10],
+		[10, 10, 10],
+		[10, 10, 10]
+		]
+	self.assertEqual(result, expected)
+	
+	def test_matrixByMatrixMultiplication(self):
+	
+		self.matrix_keeper1.matrix = [
+		[1, 2, 3],
+		[4, 5, 6],
+		[7, 8, 9]
+		]
+		
+		self.matrix_keeper2.matrix = [
+		[9, 8],
+		[7, 6],
+		[5, 4]
+		]
+		
+		result = matrixByMatrixMultiplication(self.matrix_keeper1, self.matrix_keeper2)
+		expected = [
+		[38, 32],
+		[101, 86],
+		[164, 140]
+		]
+		self.assertEqual(result, expected)
+	
+	def test_matrixScalarMultiplication(self):
+		scalar = 2
+		result = matrixScalarMultiplication(self.matrix_keeper1, scalar)
+		expected = [
+		[2, 4, 6],
+		[8, 10, 12],
+		[14, 16, 18]
+		]
+		self.assertEqual(result, expected)
+
+if __name__ == '__main__':
+unittest.main()
+
+\end{lstlisting}
+
+\centering\begin{large}
+	{Приложение В.\\
+		Полный листинг кода к третьему заданию}\\ \\
+\end{large}
+ \begin{lstlisting}
+ from task1 import MatrixKeeper
+ from typing import List
+ 
+ def determinantOfMatrix(matrix_keeper: MatrixKeeper) -> float:
+ """Calculates the determinant of a matrix. Matrix size: up to 100x100."""
+	 if matrix_keeper.matrix is None:
+		 raise ValueError("Matrix is not defined.")
+	 
+	 matrix = matrix_keeper.matrix
+	 if len(matrix) != len(matrix[0]):
+		 raise ValueError("Determinant can only be calculated for a square matrix.")
+	 
+	 return gauss(matrix)
+	 
+ def isMatrixInvertable(matrix_keeper: MatrixKeeper) -> bool:
+ """Checks if the inverse matrix exists (detA != 0)."""
+	 try:
+		 det = determinantOfMatrix(matrix_keeper)
+		 return det != 0
+	 except ValueError:
+	 	return False
+ 
+ def gauss(matrix: List[List[float]]) -> float:
+ """Calculates the determinant of a matrix using the Gauss method."""
+	 n = len(matrix)
+	 if n == 1:
+	 	return matrix[0][0]  # For a 1x1 matrix
+	 elif n == 2:
+	 	return matrix[0][0] * matrix[1][1] - matrix[0][1] * matrix[1][0]  # For a 2x2 matrix
+	 
+	 swap_count = 0
+	 
+	 for i in range(n):
+		 max_row = max(range(i, n), key=lambda r: abs(matrix[r][i]))
+		 if matrix[max_row][i] == 0:
+			 raise ValueError("The matrix is degenerate, the determinant is zero.")
+	 
+		 if max_row != i:
+			 matrix[i], matrix[max_row] = matrix[max_row], matrix[i]
+		 	swap_count += 1
+		 
+		 for j in range(i + 1, n):
+			 factor = matrix[j][i] / matrix[i][i]
+		 		for k in range(i, n):
+		 			matrix[j][k] -= factor * matrix[i][k]
+	 
+	 determinant = 1.0
+	 for i in range(n):
+	 determinant *= matrix[i][i]
+	 
+	 return (-1) ** swap_count * determinant
+ 
+ def main():
+	 matrix_keeper = MatrixKeeper()
+	 
+	 while True:
+		 print("\nChoose from the following options:")
+		 print("1: Enter the matrix manually.")
+		 print("2: Calculate the determinant of the matrix.")
+		 print("3: Check if the inverse matrix exists.")
+		 print("4: Exit the program.\n")
+		 
+		 try:
+			 option = int(input("Enter the number of the corresponding option: "))
+		except ValueError:
+			print("Incorrect input. Please enter a number.\n")
+			 continue
+			 
+			 if option == 1:
+				 matrix_keeper.inputMatrix()
+			 elif option == 2:
+				 try:
+					 det = determinantOfMatrix(matrix_keeper)
+					 print(f"Determinant of the matrix: {det}\n")
+				 except ValueError as e:
+				 print(e)
+			 elif option == 3:
+			 try:
+				 is_invertable = isMatrixInvertable(matrix_keeper)
+				 if is_invertable:
+					 print("Yes.\n")
+				 else:
+				 print("No.\n")
+			 except ValueError as e:
+				 print(e)
+			 elif option == 4:
+				 print("Exiting the program.\n")
+				 break
+			 else:
+			 print("Incorrect input. Please choose an option from 1 to 4.\n")
+	 
+ if __name__ == "__main__":
+ main()
+ 
+ \end{lstlisting}
+
+\centering\begin{large}
+	{Приложение В-test.\\
+		Полный листинг кода к тестам третьего задания}\\ \\
+\end{large}
+
+\begin{lstlisting}
+import unittest
+from codefiles.task3 import MatrixKeeper, determinantOfMatrix, isMatrixInvertable, gauss
+
+class TestMatrixOperations(unittest.TestCase):
+
+	def setUp(self):
+		self.matrix_keeper = MatrixKeeper()
+	
+	def test_determinantOfMatrix(self):
+	
+		self.matrix_keeper.matrix = [
+		[1, 2, 3],
+		[0, 5, 6],
+		[7, 8, 9]
+		]
+		result = determinantOfMatrix(self.matrix_keeper)
+		expected = -24
+		self.assertAlmostEqual(result, expected)
+		
+		self.matrix_keeper.matrix = [
+		[4, 7],
+		[2, 6]
+		]
+		result = determinantOfMatrix(self.matrix_keeper)
+		expected = 10
+		self.assertAlmostEqual(result, expected)
+		
+		self.matrix_keeper.matrix = [[1 if i == j else 0 for j in range(100)] for i in range(100)]
+		result = determinantOfMatrix(self.matrix_keeper)
+		expected = 1
+		self.assertAlmostEqual(result, expected)
+		
+	def test_isMatrixInvertable(self):
+		self.matrix_keeper.matrix = [
+		[1, 2, 3],
+		[0, 5, 6],
+		[7, 8, 9]
+		]
+		result = isMatrixInvertable(self.matrix_keeper)
+		self.assertTrue(result)
+		
+		self.matrix_keeper.matrix = [
+		[1, 2, 3],
+		[4, 6, 8],
+		[7, 10, 12]
+		]
+		result = isMatrixInvertable(self.matrix_keeper)
+		self.assertTrue(result)
+		
+	def test_gauss(self):
+		matrix = [
+		[1, 2, 3],
+		[0, 5, 6],
+		[7, 8, 9]
+		]
+		result = gauss(matrix)
+		expected = -24
+		self.assertAlmostEqual(result, expected)
+		
+		matrix = [
+		[4, 7],
+		[2, 6]
+		]
+		result = gauss(matrix)
+		expected = 10
+		self.assertAlmostEqual(result, expected)
+		
+		matrix = [
+		[5]
+		]
+		result = gauss(matrix)
+		expected = 5
+		self.assertAlmostEqual(result, expected)
+		
+		matrix = [[1 if i == j else 0 for j in range(100)] for i in range(100)]
+		result = gauss(matrix)
+		expected = 1
+		self.assertAlmostEqual(result, expected)
+		
+		matrix = [
+		[1, 2],
+		[2, 4]
+		]
+		result = gauss(matrix)
+		expected = 0
+		self.assertAlmostEqual(result, expected)
+
+if __name__ == '__main__':
+unittest.main()
+
+\end{lstlisting}
+
