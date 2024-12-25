@@ -1,16 +1,25 @@
 from task1 import MatrixKeeper
-from typing import List
+from typing import List, Tuple
+
+def csrToDense(values: List[float], indices: List[int], indptr: List[int], shape: Tuple[int, int]) -> List[List[float]]:
+    """Преобразует CSR формат в плотный формат."""
+    n, m = shape
+    dense_matrix = [[0.0] * m for _ in range(n)]
+    for i in range(n):
+        for idx in range(indptr[i], indptr[i+1]):
+            dense_matrix[i][indices[idx]] = values[idx]
+    return dense_matrix
 
 def determinantOfMatrix(matrix_keeper: MatrixKeeper) -> float:
     """Вычисляет определитель матрицы. Размер матрицы: до 100x100."""
-    if matrix_keeper.matrix is None:
+    if matrix_keeper.values is None:
         raise ValueError("Матрица не задана.")
-    
-    matrix = matrix_keeper.matrix
-    if len(matrix) != len(matrix[0]):
+
+    if matrix_keeper.shape[0] != matrix_keeper.shape[1]:
         raise ValueError("Определитель можно вычислить только для квадратной матрицы.")
-    
-    return gauss(matrix)
+
+    dense_matrix = csrToDense(matrix_keeper.values, matrix_keeper.indices, matrix_keeper.indptr, matrix_keeper.shape)
+    return gauss(dense_matrix)
 
 def isMatrixInvertable(matrix_keeper: MatrixKeeper) -> bool:
     """Проверяет, существует ли обратная матрица (detA != 0)."""
@@ -34,7 +43,7 @@ def gauss(matrix: List[List[float]]) -> float:
         max_row = max(range(i, n), key=lambda r: abs(matrix[r][i]))
         if matrix[max_row][i] == 0:
             raise ValueError("Матрица вырожденная, определитель равен нулю.")
-        
+
         if max_row != i:
             matrix[i], matrix[max_row] = matrix[max_row], matrix[i]
             swap_count += 1
