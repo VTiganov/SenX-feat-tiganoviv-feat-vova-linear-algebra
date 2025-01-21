@@ -1,48 +1,69 @@
-from typing import List, Optional
+from typing import List, Optional, Tuple
 
 class MatrixKeeper:
     def __init__(self):
-        self.matrix: Optional[List[List[float]]] = None
+        self.values: Optional[List[float]] = None
+        self.indices: Optional[List[int]] = None
+        self.indptr: Optional[List[int]] = None
+        self.shape: Optional[Tuple[int, int]] = None
 
     def inputMatrix(self) -> None:
         """Ввод матрицы
         Первое приглашение - ввод размера матрицы n X m
         Второе приглашение - ввод самой матрицы по строчке, элементы через пробел"""
-        
+
         try:
             n, m = map(int, input("Введите размер матрицы n x m через пробел: ").split())
-            self.matrix = []
+            self.shape = (n, m)
+            self.values = []
+            self.indices = []
+            self.indptr = [0]
             print("Введите матрицу по строке, разделяя элементы строки пробелом\n")
             for _ in range(n):
                 row = list(map(float, input().split()))
                 if len(row) != m:
                     raise ValueError("Количество элементов в строке не соответствует m.")
-                self.matrix.append(row)
+                for j, value in enumerate(row):
+                    if value != 0:
+                        self.values.append(value)
+                        self.indices.append(j)
+                self.indptr.append(len(self.values))
         except ValueError as e:
             print(f"Ошибка ввода: {e}")
-            self.matrix = None
+            self.values = None
+            self.indices = None
+            self.indptr = None
+            self.shape = None
 
     def trace(self) -> float:
         """Поиск следа матрицы"""
-        
-        if self.matrix is None:
+
+        if self.values is None or self.indices is None or self.indptr is None:
             raise ValueError("Матрица не была введена.")
 
-        if len(self.matrix) != len(self.matrix[0]):
+        if self.shape[0] != self.shape[1]:
             raise ValueError("Матрица должна быть квадратной для вычисления следа.")
 
-        return sum(self.matrix[i][i] for i in range(len(self.matrix)))
+        trace_sum = 0
+        for i in range(self.shape[0]):
+            for idx in range(self.indptr[i], self.indptr[i+1]):
+                if self.indices[idx] == i:
+                    trace_sum += self.values[idx]
+        return trace_sum
 
     def findByIndex(self, n: int, m: int) -> float:
         """Находит элемент в матрице по индексу вида n, m и выводит его"""
-        
-        if self.matrix is None:
+
+        if self.values is None or self.indices is None or self.indptr is None:
             raise ValueError("Матрица не была введена.")
 
-        if n <= 0 or m <= 0 or n > len(self.matrix) or m > len(self.matrix[0]):
+        if n <= 0 or m <= 0 or n > self.shape[0] or m > self.shape[1]:
             raise IndexError("Индексы выходят за пределы матрицы.")
 
-        return self.matrix[n-1][m-1]
+        for idx in range(self.indptr[n-1], self.indptr[n]):
+            if self.indices[idx] == m-1:
+                return self.values[idx]
+        return 0.0
 
 def main():
     matrix_keeper = MatrixKeeper()

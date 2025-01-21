@@ -1,52 +1,109 @@
 from typing import List, Optional
-from codefiles.task1 import MatrixKeeper
+from task1 import MatrixKeeper
 
-def matrixAddition(matrix_keeper1: MatrixKeeper, matrix_keeper2: MatrixKeeper) -> Optional[List[List[float]]]:
-    """Сложение двух матриц"""
+from typing import List, Optional, Tuple
 
-    if matrix_keeper1.matrix is None or matrix_keeper2.matrix is None:
+def matrixAddition(matrix_keeper1: MatrixKeeper, matrix_keeper2: MatrixKeeper) -> Optional[Tuple[List[float], List[int], List[int], Tuple[int, int]]]:
+    """Сложение двух матриц в CSR формате"""
+
+    if matrix_keeper1.values is None or matrix_keeper2.values is None:
         raise ValueError("Одна или обе матрицы не были введены.")
 
-    if len(matrix_keeper1.matrix) != len(matrix_keeper2.matrix) or len(matrix_keeper1.matrix[0]) != len(matrix_keeper2.matrix[0]):
+    if matrix_keeper1.shape != matrix_keeper2.shape:
         raise ValueError("Матрицы должны быть одного размера для сложения.")
 
-    result = []
-    for i in range(len(matrix_keeper1.matrix)):
-        row = []
-        for j in range(len(matrix_keeper1.matrix[0])):
-            row.append(matrix_keeper1.matrix[i][j] + matrix_keeper2.matrix[i][j])
-        result.append(row)
+    result_values = []
+    result_indices = []
+    result_indptr = [0]
+    n, m = matrix_keeper1.shape
 
-    return result
+    for i in range(n):
+        row_values = []
+        row_indices = []
+        row_dict = {}
 
-def matrixByMatrixMultiplication(matrix_keeper1: MatrixKeeper, matrix_keeper2: MatrixKeeper) -> Optional[List[List[float]]]:
-    """Умножение матрицы на матрицу"""
+        # Проходим по элементам первой матрицы
+        for idx in range(matrix_keeper1.indptr[i], matrix_keeper1.indptr[i+1]):
+            col = matrix_keeper1.indices[idx]
+            value = matrix_keeper1.values[idx]
+            row_dict[col] = row_dict.get(col, 0) + value
 
-    if matrix_keeper1.matrix is None or matrix_keeper2.matrix is None:
+        # Проходим по элементам второй матрицы
+        for idx in range(matrix_keeper2.indptr[i], matrix_keeper2.indptr[i+1]):
+            col = matrix_keeper2.indices[idx]
+            value = matrix_keeper2.values[idx]
+            row_dict[col] = row_dict.get(col, 0) + value
+
+        # Добавляем ненулевые элементы в результат
+        for col, value in row_dict.items():
+            if value != 0:
+                row_values.append(value)
+                row_indices.append(col)
+
+        result_values.extend(row_values)
+        result_indices.extend(row_indices)
+        result_indptr.append(len(result_values))
+
+    return result_values, result_indices, result_indptr, matrix_keeper1.shape
+
+
+def matrixByMatrixMultiplication(matrix_keeper1: MatrixKeeper, matrix_keeper2: MatrixKeeper) -> Optional[Tuple[List[float], List[int], List[int], Tuple[int, int]]]:
+    """Умножение матрицы на матрицу в CSR формате"""
+
+    if matrix_keeper1.values is None or matrix_keeper2.values is None:
         raise ValueError("Одна или обе матрицы не были введены.")
 
-    if len(matrix_keeper1.matrix[0]) != len(matrix_keeper2.matrix):
+    if matrix_keeper1.shape[1] != matrix_keeper2.shape[0]:
         raise ValueError("Количество столбцов первой матрицы должно быть равно количеству строк второй матрицы.")
 
-    result = [[0 for _ in range(len(matrix_keeper2.matrix[0]))] for _ in range(len(matrix_keeper1.matrix))]
-    for i in range(len(matrix_keeper1.matrix)):
-        for j in range(len(matrix_keeper2.matrix[0])):
-            for k in range(len(matrix_keeper2.matrix)):
-                result[i][j] += matrix_keeper1.matrix[i][k] * matrix_keeper2.matrix[k][j]
+    result_values = []
+    result_indices = []
+    result_indptr = [0]
+    n, m = matrix_keeper1.shape[0], matrix_keeper2.shape[1]
+
+    for i in range(n):
+        row_values = []
+        row_indices = []
+        row_dict = {}
+
+        # Проходим по элементам первой матрицы
+        for idx in range(matrix_keeper1.indptr[i], matrix_keeper1.indptr[i+1]):
+            col = matrix_keeper1.indices[idx]
+            value = matrix_keeper1.values[idx]
+
+            # Проходим по элементам второй матрицы
+            for j in range(matrix_keeper2.indptr[col], matrix_keeper2.indptr[col+1]):
+                col2 = matrix_keeper2.indices[j]
+                value2 = matrix_keeper2.values[j]
+                row_dict[col2] = row_dict.get(col2, 0) + value * value2
+
+        # Добавляем ненулевые элементы в результат
+        for col, value in row_dict.items():
+            if value != 0:
+                row_values.append(value)
+                row_indices.append(col)
+
+        result_values.extend(row_values)
+        result_indices.extend(row_indices)
+        result_indptr.append(len(result_values))
+
+    return result_values, result_indices, result_indptr, (n, m)
 
     return result
 
-def matrixScalarMultiplication(matrix_keeper: MatrixKeeper, scalar: float) -> Optional[List[List[float]]]:
-    """Умножение матрицы на скаляр"""
+def matrixScalarMultiplication(matrix_keeper: MatrixKeeper, scalar: float) -> Optional[Tuple[List[float], List[int], List[int], Tuple[int, int]]]:
+    """Умножение матрицы на скаляр в CSR формате"""
 
-    if matrix_keeper.matrix is None:
+    if matrix_keeper.values is None:
         raise ValueError("Матрица не была введена.")
 
-    result = []
-    for row in matrix_keeper.matrix:
-        result.append([element * scalar for element in row])
+    result_values = [value * scalar for value in matrix_keeper.values]
+    result_indices = matrix_keeper.indices
+    result_indptr = matrix_keeper.indptr
+    result_shape = matrix_keeper.shape
 
-    return result
+    return result_values, result_indices, result_indptr, result_shape
+
 
 def main():
     matrix_keeper1 = MatrixKeeper()
@@ -75,16 +132,20 @@ def main():
             try:
                 result = matrixAddition(matrix_keeper1, matrix_keeper2)
                 print("Результат сложения матриц:")
-                for row in result:
-                    print(row)
+                print("values:", result[0])
+                print("indices:", result[1])
+                print("indptr:", result[2])
+                print("shape:", result[3])
             except ValueError as e:
                 print(e)
         elif option == 4:
             try:
                 result = matrixByMatrixMultiplication(matrix_keeper1, matrix_keeper2)
                 print("Результат умножения матриц:")
-                for row in result:
-                    print(row)
+                print("values:", result[0])
+                print("indices:", result[1])
+                print("indptr:", result[2])
+                print("shape:", result[3])
             except ValueError as e:
                 print(e)
         elif option == 5:
@@ -100,8 +161,10 @@ def main():
                 scalar = float(input("Введите скаляр: "))
                 result = matrixScalarMultiplication(matrix_keeper, scalar)
                 print("Результат умножения матрицы на скаляр:")
-                for row in result:
-                    print(row)
+                print("values:", result[0])
+                print("indices:", result[1])
+                print("indptr:", result[2])
+                print("shape:", result[3])
             except ValueError as e:
                 print(e)
         elif option == 6:
